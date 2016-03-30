@@ -1,0 +1,30 @@
+{
+  "name": "tracker-server",
+  "version": "1.0.0",
+  "description": "tracker gps tk10x",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine-node ./*_spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wdalmut/tracker-server.git"
+  },
+  "keywords": [
+    "tracker",
+    "server",
+    "gps",
+    "module",
+    "tk104",
+    "tk10x"
+  ],
+  "author": "Walter Dal Mut <walter.dalmut@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wdalmut/tracker-server/issues"
+  },
+  "homepage": "https://github.com/wdalmut/tracker-server#readme",
+  "dependencies": {
+    "tk10x-parser": "^1.0.1"
+  }
+}

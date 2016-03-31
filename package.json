@@ -1,18 +1,18 @@
 {
-  "name": "tracker-server",
+  "name": "tracker-stream",
   "version": "1.0.0",
-  "description": "tracker gps tk10x",
+  "description": "tracker gps tk10x stream resources",
   "main": "index.js",
   "scripts": {
     "test": "jasmine-node ./*_spec.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wdalmut/tracker-server.git"
+    "url": "git+https://github.com/wdalmut/tracker-stream.git"
   },
   "keywords": [
     "tracker",
-    "server",
+    "stream",
     "gps",
     "module",
     "tk104",
@@ -21,9 +21,9 @@
   "author": "Walter Dal Mut <walter.dalmut@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wdalmut/tracker-server/issues"
+    "url": "https://github.com/wdalmut/tracker-stream/issues"
   },
-  "homepage": "https://github.com/wdalmut/tracker-server#readme",
+  "homepage": "https://github.com/wdalmut/tracker-stream#readme",
   "dependencies": {
     "tk10x-parser": "^1.0.1"
   }

@@ -1,44 +1,36 @@
+var stream = require('stream');
 var util = require('util');
-var EventEmitter = require('events');
-var net = require('net');
-var EventEmitter = require("events").EventEmitter;
 var parse = require('tk10x-parser');
+var Transform = stream.Transform;
 
-function Tracker() {
-  EventEmitter.call(this);
+function Tk104Stream(options) {
+  Transform.call(this, options);
+  this.pieces = [];
 }
-util.inherits(Tracker, EventEmitter);
+util.inherits(Tk104Stream, Transform);
 
-Tracker.prototype.write = function(data, client) {
-  switch (data.type) {
-    case 'DATA':
-      this.emit("data", data, client);
+Tk104Stream.prototype._write = function (chunk, enc, cb) {
+  this.pieces.push(chunk.toString().replace(/[\n\r]/g, ''));
+
+  var self = this;
+  while (this.pieces.length) {
+    var data = this.pieces.splice(0, this.pieces.length).join('');
+
+    if(data.indexOf(";") === -1) {
+      this.pieces.unshift(data);
       break;
-    case 'CONNECT':
-      this.emit("connect", data, client);
-      break;
-    default:
-      this.emit("error", data, client);
-      break;
+    }
+
+    var messagesToProcess = data.split(";");
+    for (var i = 0; i < messagesToProcess.length -1; i++) {
+      var message = parse(messagesToProcess[i]);
+      self.push(JSON.stringify(message));
+    }
+    data = data.slice(data.lastIndexOf(";")+1);
+    this.pieces.unshift(data);
   }
+
+  cb();
 };
 
-Tracker.prototype.create = function() {
-  var that = this;
-  var server = net.createServer(function(client) {
-    var data = "";
-    client.on('data', function(chunk) {
-      data += chunk.toString();
-      if(data.indexOf(";") === -1) return;
-      var messagesToProcess = data.split(";");
-      for (var i = 0; i < messagesToProcess.length -1; i++) {
-        var message = parse(messagesToProcess[i]);
-        that.write(message, client);
-      }
-      data = data.slice(data.lastIndexOf(";")+1);
-    });
-  });
-  return server;
-};
-
-module.exports = Tracker;
+module.exports = Tk104Stream;

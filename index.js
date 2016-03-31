@@ -2,6 +2,7 @@ var stream = require('stream');
 var util = require('util');
 var parse = require('tk10x-parser');
 var Transform = stream.Transform;
+var Duplex = stream.Duplex;
 
 function Tk104Stream(options) {
   Transform.call(this, options);
@@ -33,4 +34,45 @@ Tk104Stream.prototype._transform = function (chunk, enc, cb) {
   cb();
 };
 
-module.exports = Tk104Stream;
+function Tk104Reply(options) {
+  Transform.call(this, options);
+  this.pieces = [];
+  this.stop = false;
+
+  this.on('end', function() {
+    this.stop = true;
+  });
+}
+util.inherits(Tk104Reply, Transform);
+
+Tk104Reply.prototype._read = function readBytes(n) {
+  var self = this;
+  while (this.pieces.length) {
+    var chunk = this.pieces.shift();
+
+    var reply = null;
+    switch(chunk.type) {
+      case 'CONNECT':
+        self.push("LOAD");
+        break;
+      case 'DATA':
+        if (chunk.message == 'tracker') {
+          self.push("**,imei:359586018966098,C,10s");
+        }
+        break;
+    }
+  }
+
+  if (!this.stop) {
+    setTimeout(readBytes.bind(self), 1000, n);
+  }
+};
+
+Tk104Reply.prototype._write = function(chunk, enc, cb) {
+  var message = JSON.parse(chunk);
+  this.pieces.push(message);
+  cb();
+};
+
+exports.Tk104Stream = Tk104Stream;
+exports.Tk104Reply = Tk104Reply;

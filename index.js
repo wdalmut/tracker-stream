@@ -9,7 +9,7 @@ function Tk104Stream(options) {
 }
 util.inherits(Tk104Stream, Transform);
 
-Tk104Stream.prototype._write = function (chunk, enc, cb) {
+Tk104Stream.prototype._transform = function (chunk, enc, cb) {
   this.pieces.push(chunk.toString().replace(/[\n\r]/g, ''));
 
   var self = this;

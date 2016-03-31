@@ -53,7 +53,7 @@ describe("The tracker server", function() {
     s.push(null);
   });
 
-  xit("should parse a valid data message", function(done) {
+  it("should parse a valid data message", function(done) {
     var tk = new Tk104Stream();
     var s = new Readable();
     var i = 0;

@@ -54,12 +54,13 @@ Tk104Reply.prototype._read = function readBytes(n) {
     switch(chunk.type) {
       case 'CONNECT':
         self.push("LOAD");
+        self.push("**,imei:"+chunk.imei+",C,10s");
         break;
       case 'UNKNOWN':
         self.push("ON");
         break;
       case 'DATA':
-        self.push("**,imei:359586018966098,C,10s");
+        self.push("**,imei:"+chunk.imei+",C,10s");
         break;
     }
   }

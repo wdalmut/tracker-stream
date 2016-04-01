@@ -55,10 +55,11 @@ Tk104Reply.prototype._read = function readBytes(n) {
       case 'CONNECT':
         self.push("LOAD");
         break;
+      case 'UNKNOWN':
+        self.push("ON");
+        break;
       case 'DATA':
-        if (chunk.message == 'tracker') {
-          self.push("**,imei:359586018966098,C,10s");
-        }
+        self.push("**,imei:359586018966098,C,10s");
         break;
     }
   }

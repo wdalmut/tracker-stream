@@ -77,7 +77,8 @@ describe("tracker stream resources", function() {
       var tk = new Tk104Reply();
       var s = new Readable();
       s.pipe(tk).on('data', function(message) {
-        expect(message.toString()).toEqual("LOAD");
+        expect(message.toString()).toMatch(/LOAD|\*\*,imei/);
+        tk.push(null);
         done();
       });
 

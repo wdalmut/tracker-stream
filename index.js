@@ -1,3 +1,5 @@
+'use strict';
+
 var stream = require('stream');
 var util = require('util');
 var parse = require('tk10x-parser');
@@ -35,7 +37,7 @@ Tk104Stream.prototype._transform = function (chunk, enc, cb) {
 };
 
 function Tk104Reply(options) {
-  Transform.call(this, options);
+  Duplex.call(this, options);
   this.pieces = [];
   this.stop = false;
 
@@ -43,14 +45,13 @@ function Tk104Reply(options) {
     this.stop = true;
   });
 }
-util.inherits(Tk104Reply, Transform);
+util.inherits(Tk104Reply, Duplex);
 
 Tk104Reply.prototype._read = function readBytes(n) {
   var self = this;
   while (this.pieces.length) {
     var chunk = this.pieces.shift();
 
-    var reply = null;
     switch(chunk.type) {
       case 'CONNECT':
         self.push("LOAD");
@@ -60,7 +61,6 @@ Tk104Reply.prototype._read = function readBytes(n) {
         self.push("ON");
         break;
       case 'DATA':
-        self.push("**,imei:"+chunk.imei+",C,10s");
         break;
     }
   }

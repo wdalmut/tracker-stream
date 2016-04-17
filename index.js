@@ -1,5 +1,3 @@
-'use strict';
-
 var stream = require('stream');
 var util = require('util');
 var parse = require('tk10x-parser');
@@ -44,8 +42,49 @@ function Tk104Reply(options) {
   this.on('end', function() {
     this.stop = true;
   });
+
+  this.settings = {};
+  this.byTime.seconds.every(10);
 }
 util.inherits(Tk104Reply, Duplex);
+
+Tk104Reply.prototype.__defineGetter__('byDistance', function(meters) {
+  this.settings.pad = 4;
+  return this;
+});
+
+Tk104Reply.prototype.__defineGetter__('byTime', function(meters) {
+  this.settings.pad = 2;
+  return this;
+});
+
+Tk104Reply.prototype.__defineGetter__('meters', function(meters) {
+  this.settings.type = "m";
+  return this;
+});
+
+Tk104Reply.prototype.__defineGetter__('minutes', function(meters) {
+  this.settings.type = "m";
+  return this;
+});
+
+Tk104Reply.prototype.__defineGetter__('seconds', function(meters) {
+  this.settings.type = "s";
+  return this;
+});
+
+
+Tk104Reply.prototype.every = function(every) { //reply.byDistance.every(50).meters
+  this.settings.every= every;
+  return this;
+};
+
+Tk104Reply.prototype.replyFor = function(imei) {
+  var pad = Array(this.settings.pad+1).join("0");
+  var line = pad.substring(0, pad.length - (""+this.settings.every).length) + this.settings.every + this.settings.type;
+
+  return "**,imei:"+imei+",C,"+line;
+};
 
 Tk104Reply.prototype._read = function readBytes(n) {
   var self = this;
@@ -55,7 +94,7 @@ Tk104Reply.prototype._read = function readBytes(n) {
     switch(chunk.type) {
       case 'CONNECT':
         self.push("LOAD");
-        self.push("**,imei:"+chunk.imei+",C,10s");
+        self.push(this.replyFor(chunk.imei));
         break;
       case 'UNKNOWN':
         self.push("ON");

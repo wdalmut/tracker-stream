@@ -13,3 +13,17 @@ net.createServer(function(client) {
   }).pipe(new Tk104Reply()).pipe(client);
 }).listen(9000);
 ```
+
+## Use reply every x meters|seconds|minutes
+
+```js
+// every 50 meters
+socket.pipe(new Tk104Reply().byDistance.every(50).meters).pipe(socket);
+
+// every 3 seconds
+socket.pipe(new Tk104Reply().byTime.every(3).seconds).pipe(socket);
+
+// every 7 minutes
+socket.pipe(new Tk104Reply().byTime.every(7).minutes).pipe(socket);
+```
+

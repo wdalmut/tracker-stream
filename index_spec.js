@@ -86,5 +86,32 @@ describe("tracker stream resources", function() {
       s.push(message);
       s.push(null);
     });
+
+    it("should prepare a valid reply for every 50 meters", function() {
+      [
+        {in: 50, out: "**,imei:123456,C,0050m"},
+        {in: 100, out: "**,imei:123456,C,0100m"},
+      ].forEach(function(test) {
+        expect(new Tk104Reply().byDistance.every(test.in).meters.replyFor(123456)).toEqual(test.out);
+      });
+    });
+
+    it("should prepare a valid reply for every x seconds", function() {
+      [
+        {in: 10, out: "**,imei:123456,C,10s"},
+        {in: 7, out: "**,imei:123456,C,07s"},
+      ].forEach(function(test) {
+        expect(new Tk104Reply().byTime.every(test.in).seconds.replyFor(123456)).toEqual(test.out);
+      });
+    });
+
+    it("should prepare a valid reply for every x minutes", function() {
+      [
+        {in: 10, out: "**,imei:123456,C,10m"},
+        {in: 4, out: "**,imei:123456,C,04m"},
+      ].forEach(function(test) {
+        expect(new Tk104Reply().byTime.every(test.in).minutes.replyFor(123456)).toEqual(test.out);
+      });
+    });
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "tracker-stream",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "tracker gps tk10x stream resources",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/wdalmut/tracker-stream#readme",
   "dependencies": {
-    "tk10x-parser": "^1.0.1"
+    "tk10x-parser": "^1.0.2"
   }
 }

@@ -1,5 +1,5 @@
-var Tk104Stream = require('.').Tk104Stream;
-var Tk104Reply = require('.').Tk104Reply;
+var Tk104Stream = require('..').Tk104Stream;
+var Tk104Reply = require('..').Tk104Reply;
 var Readable = require('stream').Readable;
 
 describe("tracker stream resources", function() {

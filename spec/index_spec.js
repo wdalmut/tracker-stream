@@ -115,7 +115,9 @@ describe("tracker stream resources", function() {
     });
 
     it("should reply with SMS mode after a while", function(done) {
-      var tk = new Tk104Reply();
+      var tk = new Tk104Reply({
+        timeout: 10,
+      });
       tk.devices["359586015829802"] = {time: 0, coord: {"lat":22.573377,"lon":113.905462}};
       var s = new Readable();
       s.pipe(tk).on('data', function(message) {

@@ -27,3 +27,14 @@ socket.pipe(new Tk104Reply().byTime.every(3).seconds).pipe(socket);
 socket.pipe(new Tk104Reply().byTime.every(7).minutes).pipe(socket);
 ```
 
+## SMS mode after a timeout
+
+Send the SMS mode after a while in the same place.
+
+```js
+socket.pipe(new Tk104Reply({
+  distance: 10,        // 10 meters
+  timeout: 1000*10*60, // 10 minutes
+})).pipe(socket);
+```
+

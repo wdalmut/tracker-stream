@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var stream = require('stream');
 var util = require('util');
 var parse = require('tk10x-parser');
@@ -36,7 +37,11 @@ Tk104Stream.prototype._transform = function (chunk, enc, cb) {
 };
 
 function Tk104Reply(options) {
+  options = options || {};
   Duplex.call(this, options);
+
+  this.options = _.defaults(options, {timeout: false, distance: 50});
+
   this.devices = {};
   this.pieces = [];
   this.stop = false;
@@ -102,15 +107,16 @@ Tk104Reply.prototype._read = function readBytes(n) {
         self.push("ON");
         break;
       case 'DATA':
-        var imei = chunk.imei;
-        if (!(self.devices[imei]) || between(self.devices[imei].coord, chunk.coord) > 50) {
-          self.devices[imei] = {"time": self.getTimestamp(), "coord": chunk.coord};
-        }
+        if (self.options.timeout) {
+          var imei = chunk.imei;
+          if (!(self.devices[imei]) || between(self.devices[imei].coord, chunk.coord) > self.options.distance) {
+            self.devices[imei] = {"time": self.getTimestamp(), "coord": chunk.coord};
+          }
 
-        if (self.getTimestamp() - self.devices[imei].time > 1000*60*10) {
-          self.push("**,imei:"+imei+",N"); // SMS mode
+          if (self.getTimestamp() - self.devices[imei].time > self.options.timeout) {
+            self.push("**,imei:"+imei+",N"); // SMS mode
+          }
         }
-
         break;
     }
   }

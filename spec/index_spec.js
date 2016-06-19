@@ -113,5 +113,19 @@ describe("tracker stream resources", function() {
         expect(new Tk104Reply().byTime.every(test.in).minutes.replyFor(123456)).toEqual(test.out);
       });
     });
+
+    it("should reply with SMS mode after a while", function(done) {
+      var tk = new Tk104Reply();
+      tk.devices["359586015829802"] = {time: 0, coord: {"lat":22.573377,"lon":113.905462}};
+      var s = new Readable();
+      s.pipe(tk).on('data', function(message) {
+        expect(message.toString()).toMatch(/\*\*,imei:359586015829802,N/);
+        tk.push(null);
+        done();
+      });
+      var message = '{"date":"2016-06-19T16:05:36+02:00","type":"DATA","raw":"ciaocome va?imei:359586015829802,help me,0809231429,13554900601,F,062947.294,A,2234.4026,N,11354.3277,E,0.00,","imei":"359586015829802","coord":{"lat":22.573377,"lon":113.905462},"speed":0,"message":"help me"}';
+      s.push(message);
+      s.push(null);
+    });
   });
 });

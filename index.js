@@ -3,6 +3,7 @@ var util = require('util');
 var parse = require('tk10x-parser');
 var Transform = stream.Transform;
 var Duplex = stream.Duplex;
+var between = require('wdistance');
 
 function Tk104Stream(options) {
   Transform.call(this, options);
@@ -36,6 +37,7 @@ Tk104Stream.prototype._transform = function (chunk, enc, cb) {
 
 function Tk104Reply(options) {
   Duplex.call(this, options);
+  this.devices = {};
   this.pieces = [];
   this.stop = false;
 
@@ -100,6 +102,15 @@ Tk104Reply.prototype._read = function readBytes(n) {
         self.push("ON");
         break;
       case 'DATA':
+        var imei = chunk.imei;
+        if (!(self.devices[imei]) || between(self.devices[imei].coord, chunk.coord) > 50) {
+          self.devices[imei] = {"time": self.getTimestamp(), "coord": chunk.coord};
+        }
+
+        if (self.getTimestamp() - self.devices[imei].time > 1000*60*10) {
+          self.push("**,imei:"+imei+",N"); // SMS mode
+        }
+
         break;
     }
   }
@@ -108,6 +119,10 @@ Tk104Reply.prototype._read = function readBytes(n) {
     setTimeout(readBytes.bind(self), 1000, n);
   }
 };
+
+Tk104Reply.prototype.getTimestamp = function() {
+  return new Date().getTime();
+}
 
 Tk104Reply.prototype._write = function(chunk, enc, cb) {
   var message = JSON.parse(chunk);

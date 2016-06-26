@@ -86,6 +86,10 @@ Tk104Reply.prototype.every = function(every) { //reply.byDistance.every(50).mete
   return this;
 };
 
+Tk104Reply.prototype.replyForRecurrentMarker = function(imei) {
+  return "**,imei:"+imei+",C,1m";
+};
+
 Tk104Reply.prototype.replyFor = function(imei) {
   var pad = Array(this.settings.pad+1).join("0");
   var line = pad.substring(0, pad.length - (""+this.settings.every).length) + this.settings.every + this.settings.type;
@@ -101,6 +105,7 @@ Tk104Reply.prototype._read = function readBytes(n) {
     switch(chunk.type) {
       case 'CONNECT':
         self.push("LOAD");
+        self.push(this.replyForRecurrentMarker(chunk.imei));
         self.push(this.replyFor(chunk.imei));
         break;
       case 'UNKNOWN':

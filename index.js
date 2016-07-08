@@ -114,10 +114,9 @@ Tk104Reply.prototype._read = function readBytes(n) {
       case 'DATA':
         if (self.options.timeout) {
           var imei = chunk.imei;
-          var distance = between(self.devices[imei].coord, chunk.coord);
-          if (!(self.devices[imei]) || distance > self.options.distance) {
+          if (!(self.devices[imei]) || between(self.devices[imei].coord, chunk.coord) > self.options.distance) {
             self.devices[imei] = {"time": self.getTimestamp(), "coord": chunk.coord};
-            this.emit("move", {imei: imei, distance: distance});
+            this.emit("move", {imei: imei});
           }
 
           if (self.getTimestamp() - self.devices[imei].time > self.options.timeout) {

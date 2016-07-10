@@ -87,7 +87,7 @@ Tk104Reply.prototype.every = function(every) { //reply.byDistance.every(50).mete
 };
 
 Tk104Reply.prototype.replyForRecurrentMarker = function(imei) {
-  return "**,imei:"+imei+",G";
+  return "**,imei:"+imei+",C,10s";
 };
 
 Tk104Reply.prototype.replyFor = function(imei) {

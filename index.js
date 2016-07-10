@@ -122,6 +122,7 @@ Tk104Reply.prototype._read = function readBytes(n) {
           if (self.getTimestamp() - self.devices[imei].time > self.options.timeout) {
             self.push("**,imei:"+imei+",N"); // SMS mode
             self.emit("sms", {imei: imei});
+            self.devices[imei] = false; // reset the device
           }
         }
         break;
